@@ -30,18 +30,18 @@ class DataBaseHelper:
         )
         return session
 
-    async def session_dependency(self) -> AsyncSession:  # type: ignore
+    async def session_dependency(self) -> AsyncGenerator[AsyncSession]: 
         async with self.session_factory() as session:
-            yield session  # type: ignore
+            yield session 
             await session.close()
 
-    async def scoped_session_dependency(self) -> AsyncSession:  # type: ignore
+    async def scoped_session_dependency(self) -> AsyncGenerator[async_scoped_session]: 
         session = self.get_scoped_session()
-        yield session  # type: ignore
+        yield session 
         await session.close()
 
 
 db_helper = DataBaseHelper(
-    url=settings.db_url,
-    echo=settings.db_echo,
+    url=settings.db.url,
+    echo=settings.db.echo,
 )
