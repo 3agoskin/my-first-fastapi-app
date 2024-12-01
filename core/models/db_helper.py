@@ -30,14 +30,14 @@ class DataBaseHelper:
         )
         return session
 
-    async def session_dependency(self) -> AsyncGenerator[AsyncSession]: 
+    async def session_dependency(self) -> AsyncSession:  # type: ignore
         async with self.session_factory() as session:
-            yield session 
+            yield session  # type: ignore
             await session.close()
 
-    async def scoped_session_dependency(self) -> AsyncGenerator[async_scoped_session]: 
+    async def scoped_session_dependency(self) -> AsyncSession:  # type: ignore
         session = self.get_scoped_session()
-        yield session 
+        yield session  # type: ignore
         await session.close()
 
 
