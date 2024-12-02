@@ -95,7 +95,11 @@ async def get_posts_with_authors(session: AsyncSession):
 
 
 async def get_users_with_posts_and_profiles(session: AsyncSession):
-    stmt = select(User).options(joinedload(User.profile) ,selectinload(User.posts)).order_by(User.id)
+    stmt = (
+        select(User)
+        .options(joinedload(User.profile), selectinload(User.posts))
+        .order_by(User.id)
+    )
     users = await session.scalars(stmt)
 
     # for user in users.unique():
@@ -106,10 +110,25 @@ async def get_users_with_posts_and_profiles(session: AsyncSession):
             print("  -", post)
 
 
+async def get_profiles_with_user_and_users_with_posts(session: AsyncSession):
+    stmt = (
+        select(Profile)
+        .join(Profile.user)
+        .options(joinedload(Profile.user).selectinload(User.posts))
+        .where(User.username == "john")
+        .order_by(Profile.id)
+    )
+    profiles = await session.scalars(stmt)
+
+    for profile in profiles:
+        print("***" * 8)
+        print("- profile", profile.first_name, profile.user)
+        print("- posts", profile.user.posts)
+
 
 async def main():
     async with db_helper.session_factory() as session:
-        await get_users_with_posts_and_profiles(session=session)
+        await get_profiles_with_user_and_users_with_posts(session=session)
 
 
 if __name__ == "__main__":
