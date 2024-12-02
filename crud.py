@@ -17,8 +17,6 @@ async def create_user(session: AsyncSession, username: str) -> User:
 
 async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
     stmt = select(User).where(User.username == username)
-    # result: Result = await session.execute(stmt)
-    # user: User | None = result.scalar_one_or_none()
     user: User | None = await session.scalar(stmt)
     print("found user", username, user)
     return user
@@ -44,26 +42,15 @@ async def create_user_profile(
 
 async def main():
     async with db_helper.session_factory() as session:
-        # await create_user(session=session, username="john")
-        # await create_user(session=session, username="sam")
-        # await get_user_by_username(session=session, username="bob")
-        user_john = await get_user_by_username(session=session, username="john")
-        user_sam = await get_user_by_username(session=session, username="sam")
-        if user_john:
+        await create_user(session=session, username="yuri")
+        user_yuri = await get_user_by_username(session=session, username="yuri")
+        if user_yuri:
             await create_user_profile(
                 session=session,
-                user_id=user_john.id,
-                first_name="John",
-                last_name="Connor",
-                bio="The Leader of The Resistance",
-            )
-        if user_sam:
-            await create_user_profile(
-                session=session,
-                user_id=user_sam.id,
-                first_name="Sam",
-                last_name="Serious",
-                bio="A man with a machine gun",
+                user_id=user_yuri.id,
+                first_name="Yuri",
+                last_name="Dud",
+                bio="Journalist",
             )
 
 
