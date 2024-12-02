@@ -1,7 +1,7 @@
 import asyncio
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -72,10 +72,11 @@ async def create_posts(
 
 
 async def get_users_with_posts(session: AsyncSession):
-    stmt = select(User).options(joinedload(User.posts)).order_by(User.id)
+    # stmt = select(User).options(joinedload(User.posts)).order_by(User.id)
+    stmt = select(User).options(selectinload(User.posts)).order_by(User.id)
     # users = await session.scalars(stmt)
     result: Result = await session.execute(stmt)
-    users = result.unique().scalars()
+    users = result.scalars()
 
     # for user in users.unique():
     for user in users:
