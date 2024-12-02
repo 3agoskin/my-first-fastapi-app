@@ -1,6 +1,7 @@
 import asyncio
 
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -41,13 +42,22 @@ async def create_user_profile(
 
 
 async def show_users_with_profiles(session: AsyncSession):  # -> list[User]:
-    stmt = select(User).order_by(User.username.desc())
+    stmt = select(User).options(joinedload(User.profile)).order_by(User.id.desc())
     # result: Result = await session.execute(stmt)
     # users = result.scalars()
     users = await session.scalars(stmt)
 
     for user in users:
-        print(user)
+        print(
+            user,
+            ", First Name:",
+            user.profile.first_name,
+            ", Last Name:",
+            user.profile.last_name,
+            ", Bio:",
+            user.profile.bio,
+            sep="",
+        )
 
 
 async def main():
