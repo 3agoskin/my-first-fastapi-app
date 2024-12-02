@@ -40,18 +40,19 @@ async def create_user_profile(
     return profile
 
 
+async def show_users_with_profiles(session: AsyncSession):  # -> list[User]:
+    stmt = select(User).order_by(User.username.desc())
+    # result: Result = await session.execute(stmt)
+    # users = result.scalars()
+    users = await session.scalars(stmt)
+
+    for user in users:
+        print(user)
+
+
 async def main():
     async with db_helper.session_factory() as session:
-        await create_user(session=session, username="yuri")
-        user_yuri = await get_user_by_username(session=session, username="yuri")
-        if user_yuri:
-            await create_user_profile(
-                session=session,
-                user_id=user_yuri.id,
-                first_name="Yuri",
-                last_name="Dud",
-                bio="Journalist",
-            )
+        await show_users_with_profiles(session=session)
 
 
 if __name__ == "__main__":
