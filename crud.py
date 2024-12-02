@@ -24,12 +24,47 @@ async def get_user_by_username(session: AsyncSession, username: str) -> User | N
     return user
 
 
+async def create_user_profile(
+    session: AsyncSession,
+    user_id: int,
+    first_name: str | None = None,
+    last_name: str | None = None,
+    bio: str | None = None,
+) -> Profile:
+    profile = Profile(
+        user_id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+        bio=bio,
+    )
+    session.add(profile)
+    await session.commit()
+    return profile
+
+
 async def main():
     async with db_helper.session_factory() as session:
         # await create_user(session=session, username="john")
         # await create_user(session=session, username="sam")
-        await get_user_by_username(session=session, username="sam")
-        await get_user_by_username(session=session, username="bob")
+        # await get_user_by_username(session=session, username="bob")
+        user_john = await get_user_by_username(session=session, username="john")
+        user_sam = await get_user_by_username(session=session, username="sam")
+        if user_john:
+            await create_user_profile(
+                session=session,
+                user_id=user_john.id,
+                first_name="John",
+                last_name="Connor",
+                bio="The Leader of The Resistance",
+            )
+        if user_sam:
+            await create_user_profile(
+                session=session,
+                user_id=user_sam.id,
+                first_name="Sam",
+                last_name="Serious",
+                bio="A man with a machine gun",
+            )
 
 
 if __name__ == "__main__":
