@@ -110,7 +110,7 @@ async def get_users_with_posts_and_profiles(session: AsyncSession):
             print("  -", post)
 
 
-async def get_profiles_with_user_and_users_with_posts(session: AsyncSession):
+async def get_profiles_with_users_and_users_with_posts(session: AsyncSession):
     stmt = (
         select(Profile)
         .join(Profile.user)
@@ -126,9 +126,50 @@ async def get_profiles_with_user_and_users_with_posts(session: AsyncSession):
         print("- posts", profile.user.posts)
 
 
+async def main_relations(session: AsyncSession):
+    await create_user(session=session, username="john")
+    await create_user(session=session, username="alice")
+    await create_user(session=session, username="sam")
+    user_sam = await get_user_by_username(session=session, username="sam")
+    user_john = await get_user_by_username(session=session, username="john")
+    # user_bob = await get_user_by_username(session=session, username="bob")
+    if user_john:
+        await create_user_profile(
+            session=session,
+            user_id=user_john.id,
+            first_name="John",
+        )
+        await create_posts(
+            session,
+            user_john.id,
+            "SQLA 2.0",
+            "SQLA Joins",
+        )
+    if user_sam:
+        await create_user_profile(
+            session=session,
+            user_id=user_sam.id,
+            first_name="Sam",
+            last_name="White",
+        )
+        await create_posts(
+            session,
+            user_sam.id,
+            "FastAPI intro",
+            "FastAPI Advanced",
+            "FastAPI more",
+        )
+    await show_users_with_profiles(session=session)
+
+    await get_users_with_posts(session=session)
+    await get_posts_with_authors(session=session)
+    await get_users_with_posts_and_profiles(session=session)
+    await get_profiles_with_users_and_users_with_posts(session=session)
+
+
 async def main():
     async with db_helper.session_factory() as session:
-        await get_profiles_with_user_and_users_with_posts(session=session)
+        # await main_relations(session=session)
 
 
 if __name__ == "__main__":
