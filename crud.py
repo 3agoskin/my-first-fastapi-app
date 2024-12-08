@@ -193,7 +193,7 @@ async def create_product(
     return product
 
 
-async def demo_m2m(session: AsyncSession):
+async def create_orders_and_products(session: AsyncSession):
     order_no_promo = await create_order(session)
     order_with_promo = await create_order(session, promocode="promo")
 
@@ -237,6 +237,27 @@ async def demo_m2m(session: AsyncSession):
         order_with_promo.products.append(book_post)
 
     await session.commit()
+
+
+async def get_orders_with_products(session: AsyncSession) -> list[Order]:
+    stmt = select(Order).options(selectinload(Order.products)).order_by(Order.id)
+    orders = await session.scalars(stmt)
+
+    return list(orders)
+
+
+async def demo_m2m(session: AsyncSession):
+    # await create_orders_and_products(session=session)
+    orders = await get_orders_with_products(session=session)
+    for order in orders:
+        print(
+            f"{order.id=}",
+            f"{order.promocode=}",
+            f"{order.created_at=}",
+            "products:",
+        )
+        for product in order.products:
+            print("- ", f"{product.id}", f"{product.name=}", f"{product.price=}")
 
 
 async def main():
