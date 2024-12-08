@@ -6,4 +6,4 @@ Lesson Code ["**FastAPI + SQLAlchemy**"](https://www.youtube.com/playlist?list=P
 - [x] [A web application on FastAPI. Poetry, Pydantic V2, APIRouter, CRUD. Video 1](https://www.youtube.com/watch?v=JeVXbTuXkNg)
 - [x] [A web application on FastAPI. SQLAlchemy 2.0, Pydantic Settings, asyncio, CRUD. Video 2](https://www.youtube.com/watch?v=JeVXbTuXkNg)
 - [x] [Asynchronous SQLAlchemy 2.0 | alembic migrations | relationships between tables | Not FastAPI | Video 3](https://www.youtube.com/watch?v=LKkn-2FId8w)
-- [ ] [The Many-To-Many relationship in SQLAlchemy 2.0 | The relationship between many-to-many tables | Not FastAPI | Video 4](https://www.youtube.com/watch?v=bxlUJmBOPaY)
+- [x] [The Many-To-Many relationship in SQLAlchemy 2.0 | The relationship between many-to-many tables | Not FastAPI | Video 4](https://www.youtube.com/watch?v=bxlUJmBOPaY)
