@@ -17,7 +17,6 @@ class RouterTag(Enum):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-
     yield
 
 
@@ -28,8 +27,11 @@ app.include_router(users_router, tags=[RouterTag.USERS])
 
 
 @app.get("/")
-def root():
-    return {"message": "Root!"}
+def hello_index():
+    return {
+        "message": "Hello index!",
+    }
+
 
 @app.post("/img/")
 def recive_img():
