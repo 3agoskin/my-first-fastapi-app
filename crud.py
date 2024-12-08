@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper, User, Profile, Post
+from core.models import db_helper, User, Profile, Post, Order, Product
 
 
 async def create_user(session: AsyncSession, username: str) -> User:
@@ -167,8 +167,76 @@ async def main_relations(session: AsyncSession):
     await get_profiles_with_users_and_users_with_posts(session=session)
 
 
+async def create_order(
+    session: AsyncSession,
+    promocode: str | None = None,
+) -> Order:
+    order = Order(promocode=promocode)
+    print("Order before commit", order.id)
+    session.add(order)
+    await session.commit()
+    print("Order after commit", order.id)
+    return order
+
+
+async def create_product(
+    session: AsyncSession,
+    name: str,
+    description: str,
+    price: int,
+) -> Product:
+    product = Product(name=name, description=description, price=price)
+    print("Product before commit", product.id)
+    session.add(product)
+    await session.commit()
+    print("Product after commit", product.id)
+    return product
+
+
 async def demo_m2m(session: AsyncSession):
-    pass
+    order_no_promo = await create_order(session)
+    order_with_promo = await create_order(session, promocode="promo")
+
+    book_metro_2033 = await create_product(
+        session,
+        "Metro 2033",
+        "Post-apocalypse by Dmitry Glukhovsky in the Moscow subway",
+        499,
+    )
+    book_metro_2034 = await create_product(
+        session,
+        "Metro 2034",
+        "Continuation of Dmitry Glukhovsky's novel in the post apocalyptic Moscow of the future",
+        459,
+    )
+    book_post = await create_product(
+        session,
+        "Post",
+        "A new post-apocalypse from Dmitry Glukhovsky with the return of the monarchy and new NLP weapons",
+        899,
+    )
+
+    order_no_promo = await session.scalar(
+        select(Order)
+        .where(Order.id == order_no_promo.id)
+        .options(selectinload(Order.products))
+    )
+
+    order_with_promo = await session.scalar(
+        select(Order)
+        .where(Order.id == order_with_promo.id)
+        .options(selectinload(Order.products))
+    )
+
+    if order_no_promo:
+        order_no_promo.products.append(book_metro_2033)
+
+    if order_with_promo:
+        order_with_promo.products.append(book_metro_2033)
+        order_with_promo.products.append(book_metro_2034)
+        order_with_promo.products.append(book_post)
+
+    await session.commit()
 
 
 async def main():
