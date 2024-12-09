@@ -56,3 +56,11 @@ def demo_basic_auth_username(auth_username: str = Depends(get_auth_user_username
         "message": f"Hello, {auth_username}!",
         "username": auth_username,
     }
+
+
+@router.get(path="/some-http-header-auth/")
+def demo_auth_some_http_header(username: str = Depends(...)):
+    return {
+        "message": f"Hello, {username}!",
+        "username": username,
+    }
