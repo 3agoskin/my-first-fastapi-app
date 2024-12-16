@@ -1,4 +1,4 @@
-[tool.poetry]
+ [tool.poetry]
 name = "my-first-fastapi-app"
 version = "0.1.0"
 description = ""
@@ -15,6 +15,7 @@ aiosqlite = "^0.20.0"
 pydantic-settings = "^2.3.4"
 python-multipart = "^0.0.9"
 alembic = "^1.14.0"
+pyjwt = {extras = ["crypto"], version = "^2.10.1"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
