@@ -16,6 +16,7 @@ pydantic-settings = "^2.3.4"
 python-multipart = "^0.0.9"
 alembic = "^1.14.0"
 pyjwt = {extras = ["crypto"], version = "^2.10.1"}
+bcrypt = "^4.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
